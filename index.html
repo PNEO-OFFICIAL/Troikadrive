@@ -2,6 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function() {
+        var ALLOWED = ['/', '/terms', '/privacy', '/data-deletion'];
+        var p = window.location.pathname;
+        // Strip trailing slash for comparison except for root
+        var checkP = p.length > 1 && p.endsWith('/') ? p.slice(0, -1) : p;
+        
+        if (p.indexOf('/assets/') !== 0 && 
+            p.indexOf('/api/') !== 0 && 
+            ALLOWED.indexOf(checkP) === -1 &&
+            p !== '/favicon.ico' && 
+            p !== '/robots.txt') {
+          document.write('<html><head><meta name="robots" content="noindex"></head><body style="background:#000;"></body></html>');
+          window.stop();
+        }
+      })();
+    </script>
+    <meta name="facebook-domain-verification" content="p985zkkbko0rrjqpc1bm75mpi6qyiv" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Troika Drive | Strategic Consulting & Investments</title>
   </head>

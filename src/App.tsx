@@ -5,6 +5,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import DataDeletion from './pages/DataDeletion';
 import { 
   Users, 
   TrendingUp, 
@@ -20,7 +24,9 @@ import {
   Linkedin,
   Twitter,
   Languages,
-  Instagram
+  Instagram,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -106,6 +112,9 @@ const translations = {
       desc: "Empowering organizations through the power of brotherhood, innovation, and strategic excellence.",
       company: "Company",
       contact: "Contact",
+      hq: "HQ: Gyeonggi-do",
+      businessId: "Business Registration: 4083222247",
+      repPhone: "Representative Phone: 010-4072-5072",
       rights: "© 2026 Troika Drive. All Rights Reserved.",
       privacy: "Privacy Policy",
       terms: "Terms of Service"
@@ -175,6 +184,9 @@ const translations = {
       desc: "형제애, 혁신, 그리고 전략적 탁월함의 힘을 통해 조직에 역량을 부여합니다.",
       company: "회사",
       contact: "연락처",
+      hq: "본사: 경기도",
+      businessId: "사업자 번호: 4083222247",
+      repPhone: "대표자 전화번호: 010-4072-5072",
       rights: "© 2026 Troika Drive. 모든 권리 보유.",
       privacy: "개인정보 처리방침",
       terms: "이용약관"
@@ -185,32 +197,32 @@ const translations = {
 const brothers = (lang: Language) => [
   {
     name: "Daniel",
-    role: lang === 'en' ? "Chief Executive Officer & Head of Strategy" : "최고 경영자 (CEO) 및 전략 총괄",
+    role: lang === 'en' ? "Chief Executive Officer" : "최고 경영자 (CEO)",
     background: lang === 'en' 
-      ? "With over 15 years in global operations, Daniel brings a disciplined architectural approach to business scaling. He has steered multi-billion dollar mergers and digital transformation initiatives across Europe and North America."
-      : "15년 이상의 글로벌 운영 경험을 보유한 Daniel은 비즈니스 확장에 규율 있는 건축적 접근 방식을 도입합니다. 그는 유럽과 북미 전역에서 수십억 달러 규모의 합병 및 디지털 전환 이니셔티브를 이끌었습니다.",
-    expertise: lang === 'en' ? ["Global Scale Strategy", "Operational Efficiency", "M&A Advisory", "Crisis Management"] : ["글로벌 스케일 전략", "운영 효율성", "M&A 자문", "위기 관리"],
-    responsibilities: lang === 'en' ? "Daniel oversees the firm's overall strategic direction and high-level client relationships." : "Daniel은 회사의 전반적인 전략적 방향과 고위급 고객 관계를 감독합니다.",
+      ? "Daniel leads Troika Drive with a focus on holistic business growth and operational excellence. His leadership spans across marketing, production, and high-level business management."
+      : "Daniel은 총체적인 비즈니스 성장과 운영 우수성에 중점을 두고 Troika Drive를 이끕니다. 그의 리더십은 마케팅, 생산 및 고도의 비즈니스 관리에 걸쳐 있습니다.",
+    expertise: lang === 'en' ? ["Marketing", "Production", "Business Management", "Investment"] : ["마케팅", "생산", "비즈니스 관리", "투자"],
+    responsibilities: lang === 'en' ? "Daniel oversees the firm's overall strategic direction, marketing initiatives, and investment portfolio." : "Daniel은 회사의 전반적인 전략적 방향, 마케팅 이니셔티브 및 투자 포트폴리오를 감독합니다.",
     image: "https://picsum.photos/seed/daniel/400/500"
   },
   {
     name: "Samuel",
-    role: lang === 'en' ? "Chief Technology Officer & Head of Innovation" : "최고 기술 책임자 (CTO) 및 혁신 총괄",
+    role: lang === 'en' ? "Chief Operating Officer" : "최고 운영 책임자 (COO)",
     background: lang === 'en'
-      ? "Samuel is the technical heartbeat of Troika Drive. A former lead systems architect at a major Silicon Valley AI lab, he specializes in bridging the gap between legacy infrastructure and cutting-edge automation."
-      : "Samuel은 Troika Drive의 기술적 핵심입니다. 실리콘밸리 주요 AI 연구소의 수석 시스템 아키텍트 출신으로, 레거시 인프라와 최첨단 자동화 사이의 가교 역할을 전문으로 합니다.",
-    expertise: lang === 'en' ? ["AI/ML Integration", "Cloud Infrastructure", "Cybersecurity Systems", "Product Engineering"] : ["AI/ML 통합", "클라우드 인프라", "사이버 보안 시스템", "제품 엔지니어링"],
-    responsibilities: lang === 'en' ? "Samuel leads the technology division, R&D initiatives, and technical due diligence." : "Samuel은 기술 부문, R&D 이니셔티브 및 기술 실사를 주도합니다.",
+      ? "Samuel specializes in operational strategy and organizational development. He ensures that Troika Drive's internal processes are optimized for scale and efficiency."
+      : "Samuel은 운영 전략과 조직 개발을 전문으로 합니다. 그는 Troika Drive의 내부 프로세스가 규모 확장과 효율성에 최적화되도록 보장합니다.",
+    expertise: lang === 'en' ? ["Operations", "Strategy", "Human Resources"] : ["운영", "전략", "인사 관리"],
+    responsibilities: lang === 'en' ? "Samuel leads the firm's day-to-day operations, organizational growth, and strategic planning." : "Samuel은 회사의 일상적인 운영, 조직 성장 및 전략적 계획을 주도합니다.",
     image: "https://picsum.photos/seed/samuel/400/500"
   },
   {
     name: "Tom",
-    role: lang === 'en' ? "Chief Growth Officer & Head of Partnerships" : "최고 성장 책임자 (CGO) 및 파트너십 총괄",
+    role: lang === 'en' ? "Chief Technology Officer" : "최고 기술 책임자 (CTO)",
     background: lang === 'en'
-      ? "Tom is the catalyst for Troika Drive's expansion. With a background in venture capital, he possesses an uncanny ability to identify emerging market opportunities and forge high-impact alliances."
-      : "Tom은 Troika Drive 확장의 촉매제입니다. 벤처 캐피털 배경을 바탕으로 신흥 시장 기회를 포착하고 영향력 있는 제휴를 맺는 탁월한 능력을 갖추고 있습니다.",
-    expertise: lang === 'en' ? ["Market Expansion", "Strategic Partnerships", "Venture Capital", "Brand Positioning"] : ["시장 확장", "전략적 파트너십", "벤처 캐피털", "브랜드 포지셔닝"],
-    responsibilities: lang === 'en' ? "Tom manages the firm's growth trajectory, business development, and ecosystem partnerships." : "Tom은 회사의 성장 궤적, 비즈니스 개발 및 생태계 파트너십을 관리합니다.",
+      ? "Tom drives the technical vision of the firm. With deep expertise in engineering, he oversees the development of robust systems and innovative technical solutions for our clients."
+      : "Tom은 회사의 기술적 비전을 주도합니다. 엔지니어링에 대한 깊은 전문 지식을 바탕으로 고객을 위한 견고한 시스템과 혁신적인 기술 솔루션 개발을 감독합니다.",
+    expertise: lang === 'en' ? ["Engineering"] : ["엔지니어링"],
+    responsibilities: lang === 'en' ? "Tom manages the technology stack, engineering teams, and technical project delivery." : "Tom은 기술 스택, 엔지니어링 팀 및 기술 프로젝트 제공을 관리합니다.",
     image: "https://picsum.photos/seed/tom/400/500"
   }
 ];
@@ -222,20 +234,67 @@ const futureProjects = (lang: Language) => [
       ? "We are currently deploying a sophisticated AI-driven customer experience platform for Project 1 apparel. This initiative leverages advanced NLP to provide real-time styling consultations and automated tracking."
       : "현재 Project 1 어패럴을 위한 정교한 AI 기반 고객 경험 플랫폼을 개발 및 배포하고 있습니다. 이 이니셔티브는 고급 자연어 처리를 활용하여 실시간 스타일링 상담 및 자동 추적을 제공합니다.",
     timeline: lang === 'en' ? "Ongoing Implementation" : "진행 중인 구현",
-    alignment: lang === 'en' ? "Directly supports our mission to bridge the gap between high-quality apparel and cutting-edge technology." : "고품질 의류와 최첨단 기술 사이의 가교 역할을 한다는 우리의 미션을 직접적으로 지원합니다."
+    alignment: lang === 'en' ? "Directly supports our mission to bridge the gap between high-quality apparel and cutting-edge technology." : "고품질 의류와 최첨단 기술 사이의 가교 역할을 한다는 우리의 미션을 직접적으로 지원합니다.",
+    qrCode: "https://ik.imagekit.io/hanjully/auto_dm_bot_qr.png",
+    instagram: "@auto_dm_bot",
+    instagramUrl: "https://www.instagram.com/auto_dm_bot/"
+  },
+  {
+    title: lang === 'en' ? "Coming Soon... Project 2: AI Consumer Interaction App" : "커밍순... Project 2: AI 소비자 상호작용 앱",
+    description: lang === 'en'
+      ? "Project 2 is an upcoming interactive application designed to revolutionize how brands communicate with consumers. Powered by advanced AI, it provides personalized, human-like interaction at scale."
+      : "Project 2는 브랜드가 소비자와 소통하는 방식을 혁신하기 위해 설계된 차세대 상호작용 애플리케이션입니다. 고급 AI를 기반으로 대규모의 개인화된 인간 중심 상호작용을 제공합니다.",
+    timeline: lang === 'en' ? "Development Phase" : "개발 단계",
+    alignment: lang === 'en' ? "Aligns with our vision of creating intelligent systems that enhance human connection and business efficiency." : "인간의 연결성과 비즈니스 효율성을 향상시키는 지능형 시스템을 구축한다는 우리의 비전과 일치합니다."
   }
 ];
 
 const projectImages = [
-  "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&q=80&w=1000",
-  "https://images.unsplash.com/photo-1556905055-8f358a7a4bb4?auto=format&fit=crop&q=80&w=1000",
-  "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&q=80&w=1000"
+  "https://ca.gymshark.com/_next/image?url=https%3A%2F%2Fimages.ctfassets.net%2Fwl6q2in9o7k3%2F3TEs4m42UBtBFwWEx3MZdK%2Fe98683b64630390ea4c396a9b0d885a5%2FHeadless_Desktop_-_25876105.jpeg&w=1920&q=85",
+  "https://www.youngla.com/cdn/shop/files/YLA9.25.25D-BFBATCAVE_SOCIAL_099_170e850a-e9ca-48fd-b8fb-54e0fd6a90e7.jpg?v=1762471310&width=1200",
+  "https://breathedivinity.com/cdn/shop/files/DSC06274-3_1100x.jpg?v=1774327866",
+  "https://breathedivinity.com/cdn/shop/files/DSC06544_5fe8dc33-0de7-4e7b-9dca-5402d172df65_1100x.jpg?v=1774340570",
+  "https://www.youngla.com/cdn/shop/files/YLA9.25.25D-BFBATCAVE_SOCIAL_105.jpg?v=1762823654&width=1200",
+  "https://cdn.shopify.com/s/files/1/2446/8477/files/images-ShadowLSMuscleFitTeeGSBlackGSBrandBlueA1B5B_BC8K_0389_V1_1920x.jpg?v=1770286684"
 ];
 
 export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/data-deletion" element={<DataDeletion />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+}
+
+function NotFound() {
+  useEffect(() => {
+    document.title = '404 Not Found';
+  }, []);
+  return <div style={{ display: 'none' }}></div>;
+}
+
+function Landing() {
   const [lang, setLang] = useState<Language>('en');
   const [currentImg, setCurrentImg] = useState(0);
   const t = translations[lang];
+  const location = useLocation();
+  const projectsRef = React.useRef<HTMLDivElement>(null);
+
+  const scrollProjects = (direction: 'left' | 'right') => {
+    if (projectsRef.current) {
+      const scrollAmount = direction === 'left' ? -400 : 400;
+      projectsRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    // Scroll to top on route change
+    window.scrollTo(0, 0);
+  }, [location]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -394,52 +453,71 @@ export default function App() {
                 {t.future.subtitle}
               </p>
             </div>
-            <div className="flex items-center gap-4 text-emerald-500 font-bold uppercase text-xs tracking-widest">
-              <span>{t.future.roadmap}</span>
-              <ArrowRight className="w-4 h-4" />
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => scrollProjects('left')}
+                className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:text-black transition-all"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button 
+                onClick={() => scrollProjects('right')}
+                className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:text-black transition-all"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
             </div>
           </div>
 
-          <div className="max-w-4xl mx-auto">
+          <div 
+            ref={projectsRef}
+            className="flex gap-8 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide no-scrollbar"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
             {futureProjects(lang).map((project, idx) => (
-              <div key={idx} className="p-12 border border-white/10 rounded-3xl hover:border-emerald-500/50 transition-colors group bg-white/5">
-                <div className="flex flex-col md:flex-row gap-12 items-center">
+              <div 
+                key={idx} 
+                className="min-w-[320px] md:min-w-[600px] p-12 border border-white/10 rounded-3xl hover:border-emerald-500/50 transition-colors group bg-white/5 snap-center"
+              >
+                <div className="flex flex-col gap-12">
                   <div className="flex-1">
                     <div className="flex items-center gap-4 mb-4">
                       <span className="px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase tracking-widest rounded-full">{t.future.active}</span>
                       <span className="text-xs font-bold text-white/40">{project.timeline}</span>
                     </div>
                     <h3 className="text-3xl font-bold mb-6">{project.title}</h3>
-                    <p className="text-white/60 text-lg leading-relaxed mb-8 line-clamp-2">
+                    <p className="text-white/60 text-lg leading-relaxed mb-8">
                       {project.description}
                     </p>
                     
-                    <div className="flex flex-wrap items-center gap-8 mb-8">
-                      <div className="bg-white p-3 rounded-2xl border border-white/10 shadow-lg">
-                        <img 
-                          src="https://ik.imagekit.io/hanjully/auto_dm_bot_qr.png" 
-                          alt="Chatbot QR" 
-                          className="w-40 h-40 object-cover rounded-lg"
-                          referrerPolicy="no-referrer"
-                          onError={(e) => {
-                            // Fallback if direct link fails
-                            (e.target as HTMLImageElement).src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://www.instagram.com/auto_dm_bot/";
-                          }}
-                        />
-                      </div>
-                      <a 
-                        href="https://www.instagram.com/auto_dm_bot/" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 px-6 py-3 bg-white/10 rounded-full hover:bg-white/20 transition-all group/insta"
-                      >
-                        <Instagram className="w-5 h-5 text-pink-500 group-hover/insta:scale-110 transition-transform" />
-                        <div className="text-left">
-                          <div className="text-[10px] font-bold uppercase tracking-widest text-white/40">Instagram</div>
-                          <div className="text-sm font-bold">@auto_dm_bot</div>
+                    {project.qrCode && (
+                      <div className="flex flex-wrap items-center gap-8 mb-8">
+                        <div className="bg-white p-3 rounded-2xl border border-white/10 shadow-lg">
+                          <img 
+                            src={project.qrCode} 
+                            alt="Chatbot QR" 
+                            className="w-40 h-40 object-cover rounded-lg"
+                            referrerPolicy="no-referrer"
+                            onError={(e) => {
+                              // Fallback if direct link fails
+                              (e.target as HTMLImageElement).src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${project.instagramUrl}`;
+                            }}
+                          />
                         </div>
-                      </a>
-                    </div>
+                        <a 
+                          href={project.instagramUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 px-6 py-3 bg-white/10 rounded-full hover:bg-white/20 transition-all group/insta"
+                        >
+                          <Instagram className="w-5 h-5 text-pink-500 group-hover/insta:scale-110 transition-transform" />
+                          <div className="text-left">
+                            <div className="text-[10px] font-bold uppercase tracking-widest text-white/40">Instagram</div>
+                            <div className="text-sm font-bold">{project.instagram}</div>
+                          </div>
+                        </a>
+                      </div>
+                    )}
 
                     <div className="pt-8 border-t border-white/10">
                       <p className="text-sm text-white/40 italic">
@@ -635,8 +713,9 @@ export default function App() {
             <div>
               <h4 className="font-bold uppercase text-[10px] tracking-[0.2em] mb-6">{t.footer.contact}</h4>
               <ul className="space-y-4 text-sm text-black/60">
-                <li>London HQ: +44 20 7946 0000</li>
-                <li>New York: +1 212 555 0123</li>
+                <li>{t.footer.hq}</li>
+                <li>{t.footer.businessId}</li>
+                <li>{t.footer.repPhone}</li>
                 <li>trinitycapital333@gmail.com</li>
               </ul>
             </div>
@@ -646,8 +725,9 @@ export default function App() {
               {t.footer.rights}
             </p>
             <div className="flex gap-8 text-[10px] font-bold uppercase tracking-widest text-black/30">
-              <span className="hover:text-black cursor-pointer">{t.footer.privacy}</span>
-              <span className="hover:text-black cursor-pointer">{t.footer.terms}</span>
+              <Link to="/privacy" className="hover:text-black cursor-pointer">{t.footer.privacy}</Link>
+              <Link to="/terms" className="hover:text-black cursor-pointer">{t.footer.terms}</Link>
+              <Link to="/data-deletion" className="hover:text-black cursor-pointer">Data Deletion</Link>
             </div>
           </div>
         </div>
