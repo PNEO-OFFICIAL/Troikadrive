@@ -337,6 +337,8 @@ function Landing() {
             { t: 'Task Completed', s: 'Net Worth 100k', done: true },
             { t: 'Task running', s: 'Net Worth 1M', done: false },
             { t: 'Task running', s: 'Net Worth 10M', done: false },
+            { t: 'Task running', s: 'Net Worth 100M', done: false },
+            { t: 'Task running', s: 'Net Worth 1B', done: false },
           ].map((c, i) => (
             <motion.div
               key={i}
