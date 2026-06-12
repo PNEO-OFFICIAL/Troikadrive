@@ -96,7 +96,6 @@ We use the following third-party services to operate our Service:
 |----------|---------|-------------|
 | **Meta (Instagram)** | Messaging platform | Messages sent/received via Instagram API |
 | **Google Cloud (Firebase)** | Data storage | Conversation logs (encrypted) |
-| **Google (Gemini API)** | AI response generation | Message content (processed in real-time, not stored by Google for training) |
 | **Naver Commerce API** | Product catalog | No user data shared — product data only |
 
 ### 4.2 We Do NOT
@@ -249,7 +248,6 @@ TROIKA DRIVE("회사")는 Project1 SmartStore Instagram 챗봇 서비스("서비
 |------------|------|----------|
 | Meta (Instagram) | 메시징 플랫폼 | Instagram API를 통한 메시지 송수신 |
 | Google Cloud (Firebase) | 데이터 저장 | 대화 로그 (암호화) |
-| Google (Gemini API) | AI 응답 생성 | 메시지 내용 (실시간 처리, Google에 저장되지 않음) |
 | 네이버 커머스 API | 상품 카탈로그 | 사용자 데이터 미제공 — 상품 데이터만 |
 
 개인정보를 광고주, 데이터 브로커 등 제3자에게 판매하지 않습니다.

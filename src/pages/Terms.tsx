@@ -51,7 +51,7 @@ When using our Service, you agree NOT to:
 
 ### 4.1 Nature of Responses
 
-Our chatbot uses artificial intelligence (Google Gemini) to generate responses. Please be aware that:
+Our chatbot uses artificial intelligence to generate responses. Please be aware that:
 
 - Responses are generated automatically and may not always be perfectly accurate.
 - Product information (prices, stock, availability) is sourced from our Naver SmartStore catalog and is subject to change.
