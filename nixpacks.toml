@@ -1,0 +1,11 @@
+# Railway/Nixpacks build config.
+# Force devDependencies during install so the Vite build (tailwindcss, tsx, etc.)
+# works even when NODE_ENV=production is set at runtime for static serving.
+[phases.install]
+cmds = ["npm ci --include=dev"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npm run start"
