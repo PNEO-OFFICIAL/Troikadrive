@@ -1,5 +1,6 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
+import { createClient as createRedisClient } from "redis";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -13,11 +14,60 @@ const CANONICAL_HOST = "troikadrive.com";
 // the Cloudflare rule exists cannot break the live site.
 const ORIGIN_SHARED_SECRET = process.env.ORIGIN_SHARED_SECRET || "";
 
+// Distributed rate limiting via Redis (defense-in-depth behind Cloudflare).
+const REDIS_URL = process.env.REDIS_URL || "";
+const REDIS_BURST_PER_SEC = Number(process.env.REDIS_BURST_PER_SEC || 10);
+const REDIS_BAN_SECONDS = Number(process.env.REDIS_BAN_SECONDS || 600);
+const REDIS_RATE_LIMIT_ENABLED = (process.env.REDIS_RATE_LIMIT_ENABLED ?? "true").toLowerCase() === "true";
+
+let redis: ReturnType<typeof createRedisClient> | null = null;
+let redisReady = false;
+if (REDIS_URL && REDIS_RATE_LIMIT_ENABLED) {
+  redis = createRedisClient({
+    url: REDIS_URL,
+    socket: { reconnectStrategy: (retries) => Math.min(retries * 100, 3000) },
+  });
+  redis.on("ready", () => { redisReady = true; });
+  redis.on("end", () => { redisReady = false; });
+  redis.on("error", () => { redisReady = false; });
+  redis.connect().catch(() => { /* degrade open until reachable */ });
+}
+
+function getClientIp(req: express.Request): string {
+  // Behind Cloudflare, cf-connecting-ip is the real client IP (unspoofable at edge).
+  return String(req.headers["cf-connecting-ip"] || req.ip || "unknown");
+}
+
 async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3000;
 
   app.disable("x-powered-by");
+  app.set("trust proxy", true);
+
+  // Distributed per-IP burst rate limit (10/s default). Degrades open when
+  // Redis is unset/unreachable, so the site keeps serving regardless.
+  app.use(async (req, res, next) => {
+    if (req.path === "/api/health") return next();
+    if (!redis || !redisReady) return next();
+    const ip = getClientIp(req);
+    try {
+      if (await redis.get(`ban:ip:${ip}`)) {
+        return res.status(429).json({ error: "IP temporarily blocked" });
+      }
+      const sec = Math.floor(Date.now() / 1000);
+      const key = `rl:ip:${ip}:${sec}`;
+      const hits = await redis.incr(key);
+      if (hits === 1) await redis.expire(key, 2);
+      if (hits > REDIS_BURST_PER_SEC) {
+        await redis.set(`ban:ip:${ip}`, "1", { EX: REDIS_BAN_SECONDS });
+        return res.status(429).json({ error: "Rate limit exceeded" });
+      }
+    } catch {
+      /* Redis hiccup: fail open */
+    }
+    next();
+  });
 
   // Security headers on every response (incl. static assets).
   app.use((_req, res, next) => {
