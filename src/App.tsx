@@ -204,10 +204,23 @@ const brothers = (lang: Language) => [
 // Visual accents for the venture cards (photos to be added later)
 const ventureVisuals = [
   { icon: Shirt, from: "from-amber-100", to: "to-orange-50", iconColor: "text-amber-700", status: "live" },
-  { icon: TrendingUp, from: "from-emerald-100", to: "to-teal-50", iconColor: "text-emerald-700", status: "live" },
-  { icon: Globe, from: "from-sky-100", to: "to-indigo-50", iconColor: "text-sky-700", status: "live" },
-  { icon: Sparkles, from: "from-neutral-100", to: "to-neutral-50", iconColor: "text-neutral-500", status: "soon" },
+  { icon: TrendingUp, from: "from-rose-100", to: "to-pink-50", iconColor: "text-rose-600", status: "live" },
+  { icon: Globe, from: "from-violet-100", to: "to-purple-50", iconColor: "text-violet-600", status: "live" },
+  { icon: Sparkles, from: "from-stone-100", to: "to-stone-50", iconColor: "text-stone-500", status: "soon" },
 ];
+
+// Dark Twilight palette for the below-hero sections
+const SECTION_VARS: Record<string, string> = {
+  '--bg': '#17142F',
+  '--ink': '#F5F3FF',
+  '--ink2': 'rgba(255,255,255,0.74)',
+  '--ink3': 'rgba(255,255,255,0.48)',
+  '--accent': '#FBBF24',
+  '--card-bg': 'rgba(255,255,255,0.055)',
+  '--card-bd': 'rgba(255,255,255,0.10)',
+  '--chip-bg': 'rgba(255,255,255,0.09)',
+  '--hairline': 'rgba(255,255,255,0.12)',
+};
 
 export default function App() {
   return (
@@ -239,7 +252,7 @@ function Landing() {
   }, [location]);
 
   return (
-    <div className="min-h-screen bg-[#F4F3EF] text-[#1A1A1A] font-sans selection:bg-emerald-100 selection:text-emerald-900">
+    <div className="min-h-screen font-sans selection:bg-amber-100 selection:text-amber-900">
       {/* Hero Section — Cofounder-style, full-bleed pixel background */}
       <section id="top" className="relative w-full h-screen min-h-[640px] overflow-hidden bg-gradient-to-b from-sky-400 via-sky-300 to-indigo-300">
         {/* Pixel-art background image (replace public/seoul-hero.png) */}
@@ -299,13 +312,13 @@ function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-[40rem]"
+            className="max-w-[44rem]"
           >
-            <h1 className="text-[2.5rem] md:text-[2.75rem] font-medium text-white leading-[1.12] tracking-tight mb-4 drop-shadow-md">
+            <h1 className="text-[2.75rem] md:text-[3rem] font-medium text-white leading-[1.1] tracking-tight mb-4 drop-shadow-md">
               Three Minds, One Vision, Unstoppable Drive.
             </h1>
-            <p className="text-sm md:text-base text-white/85 mb-7 drop-shadow">
-              Run engineering, sales, marketing, design, finance, and ops.
+            <p className="text-base md:text-lg text-white font-medium mb-7 [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
+              Founded on the principles of family legacy and technical precision.
             </p>
             <div className="flex items-center gap-3">
               <a href="#" className="px-5 py-2.5 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors">
@@ -319,41 +332,46 @@ function Landing() {
         </div>
 
         {/* Floating task chips */}
-        <div className="hidden lg:flex flex-col gap-3 absolute right-[14%] top-1/2 -translate-y-1/2 z-10">
+        <div className="hidden lg:flex flex-col gap-4 absolute right-[14%] top-1/2 -translate-y-1/2 z-10">
           {[
-            { t: 'Task Completed', s: 'Marketing Campaign', done: true },
-            { t: 'Task Completed', s: 'New webpage', done: true },
-            { t: 'Task running', s: 'bug fix', done: false },
+            { t: 'Task Completed', s: 'Net Worth 100k', done: true },
+            { t: 'Task running', s: 'Net Worth 1M', done: false },
+            { t: 'Task running', s: 'Net Worth 10M', done: false },
           ].map((c, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.4 + i * 0.15 }}
-              className="flex items-center gap-2 bg-black/35 backdrop-blur-md rounded-lg px-3 py-2 border border-white/10 shadow-lg"
+              className="flex items-center gap-2.5 bg-black/35 backdrop-blur-md rounded-xl px-4 py-3 border border-white/10 shadow-lg"
             >
               {c.done ? (
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
               ) : (
-                <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0 animate-pulse" />
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0 animate-pulse" />
               )}
-              <span className="text-[11px] text-white/55">{c.t}</span>
-              <span className="text-[11px] text-white font-medium">{c.s}</span>
+              <span className="text-sm text-white/55">{c.t}</span>
+              <span className="text-base text-white font-medium">{c.s}</span>
             </motion.div>
           ))}
         </div>
       </section>
 
+      {/* Themed below-hero wrapper (Option switcher) */}
+      <div
+        style={{ ...SECTION_VARS, background: 'var(--bg)', color: 'var(--ink)' } as React.CSSProperties}
+        className="transition-colors duration-300"
+      >
       {/* About Section — left text, right image */}
       <section id="about" className="py-24 px-6">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div>
             <div className="flex items-center gap-2 mb-6">
-              <div className="h-px w-12 bg-emerald-600" />
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600">{t.about.tag}</span>
+              <div className="h-px w-12 bg-[var(--accent)]" />
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--accent)]">{t.about.tag}</span>
             </div>
             <h2 className="text-4xl font-bold tracking-tight mb-8">{t.about.title}</h2>
-            <div className="space-y-6 text-lg text-black/70 leading-relaxed">
+            <div className="space-y-6 text-lg text-[var(--ink2)] leading-relaxed">
               <p>{t.about.p1}</p>
             </div>
           </div>
@@ -373,7 +391,7 @@ function Landing() {
       <section id="leadership" className="py-24 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600 mb-4 block">{t.leadership.tag}</span>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--accent)] mb-4 block">{t.leadership.tag}</span>
             <h2 className="text-5xl font-bold tracking-tighter">{t.leadership.title}</h2>
           </div>
 
@@ -382,27 +400,27 @@ function Landing() {
               <motion.div
                 key={`${lang}-${idx}`}
                 whileHover={{ y: -5 }}
-                className="group p-8 bg-white border border-black/5 rounded-2xl shadow-sm"
+                className="group p-8 bg-[var(--card-bg)] border border-[var(--card-bd)] rounded-2xl shadow-sm"
               >
                 <h3 className="text-2xl font-bold mb-1">{brother.name}</h3>
-                <p className="text-emerald-600 text-sm font-bold uppercase tracking-widest mb-6">{brother.role}</p>
-                <p className="text-black/60 text-sm leading-relaxed mb-6 line-clamp-3">
+                <p className="text-[var(--accent)] text-sm font-bold uppercase tracking-widest mb-6">{brother.role}</p>
+                <p className="text-[var(--ink2)] text-sm leading-relaxed mb-6 line-clamp-3">
                   {brother.background}
                 </p>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2">{t.leadership.expertise}</h4>
+                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--ink3)] mb-2">{t.leadership.expertise}</h4>
                     <div className="flex flex-wrap gap-2">
                       {brother.expertise.map((exp, i) => (
-                        <span key={i} className="px-3 py-1 bg-black/5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                        <span key={i} className="px-3 py-1 bg-[var(--chip-bg)] rounded-full text-[10px] font-bold uppercase tracking-wider">
                           {exp}
                         </span>
                       ))}
                     </div>
                   </div>
                   <div>
-                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2">{t.leadership.responsibilities}</h4>
-                    <p className="text-xs text-black/70 italic leading-relaxed">
+                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--ink3)] mb-2">{t.leadership.responsibilities}</h4>
+                    <p className="text-xs text-[var(--ink2)] italic leading-relaxed">
                       {brother.responsibilities}
                     </p>
                   </div>
@@ -417,9 +435,9 @@ function Landing() {
       <section id="ventures" className="py-28 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-black/40 mb-4 block">{t.ventures.tag}</span>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--ink3)] mb-4 block">{t.ventures.tag}</span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tighter mb-5">{t.ventures.title}</h2>
-            <p className="text-black/50 text-lg leading-relaxed">{t.ventures.subtitle}</p>
+            <p className="text-[var(--ink2)] text-lg leading-relaxed">{t.ventures.subtitle}</p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -431,7 +449,7 @@ function Landing() {
                   key={`${lang}-${idx}`}
                   whileHover={{ y: -6 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-                  className="bg-white rounded-2xl border border-black/5 shadow-sm hover:shadow-xl transition-shadow overflow-hidden flex flex-col"
+                  className="group bg-[var(--card-bg)] rounded-2xl border border-[var(--card-bd)] shadow-sm hover:shadow-xl transition-shadow overflow-hidden flex flex-col"
                 >
                   {/* Image placeholder (photos to be added later) */}
                   <div className={cn("relative aspect-[4/3] bg-gradient-to-br flex items-center justify-center", v.from, v.to)}>
@@ -441,11 +459,11 @@ function Landing() {
                     </span>
                   </div>
                   <div className="p-6 flex flex-col flex-1">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-black/35 mb-2">{card.kicker}</div>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--ink3)] mb-2">{card.kicker}</div>
                     <h3 className="text-xl font-bold tracking-tight mb-2">{card.name}</h3>
-                    <p className="text-sm text-black/55 leading-relaxed flex-1">{card.desc}</p>
+                    <p className="text-sm text-[var(--ink2)] leading-relaxed flex-1">{card.desc}</p>
                     {v.status === 'live' && (
-                      <div className="mt-5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-black/60 group-hover:text-black">
+                      <div className="mt-5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[var(--ink2)] group-hover:text-[var(--ink)]">
                         {t.ventures.explore}
                         <ArrowUpRight className="w-3.5 h-3.5" />
                       </div>
@@ -459,7 +477,7 @@ function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="py-20 px-6 border-t border-black/10">
+      <footer className="py-20 px-6 border-t border-[var(--hairline)]">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-2">
@@ -467,19 +485,19 @@ function Landing() {
                 <img src={LOGO} alt="Troika Drive logo" className="w-9 h-9 object-contain" />
                 <span className="font-bold text-xl tracking-tighter uppercase">Troika Drive</span>
               </div>
-              <p className="text-black/50 max-w-sm mb-8">
+              <p className="text-[var(--ink2)] max-w-sm mb-8">
                 {t.footer.desc}
               </p>
               <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-full border border-black/10 flex items-center justify-center hover:bg-black hover:text-white transition-colors cursor-pointer">
+                <div className="w-10 h-10 rounded-full border border-[var(--hairline)] flex items-center justify-center hover:bg-[var(--accent)] hover:text-white transition-colors cursor-pointer">
                   <Linkedin className="w-4 h-4" />
                 </div>
-                <div className="w-10 h-10 rounded-full border border-black/10 flex items-center justify-center hover:bg-black hover:text-white transition-colors cursor-pointer">
+                <div className="w-10 h-10 rounded-full border border-[var(--hairline)] flex items-center justify-center hover:bg-[var(--accent)] hover:text-white transition-colors cursor-pointer">
                   <Instagram className="w-4 h-4" />
                 </div>
                 <a
                   href="mailto:trinitycapital333@gmail.com"
-                  className="w-10 h-10 rounded-full border border-black/10 flex items-center justify-center hover:bg-black hover:text-white transition-colors cursor-pointer"
+                  className="w-10 h-10 rounded-full border border-[var(--hairline)] flex items-center justify-center hover:bg-[var(--accent)] hover:text-white transition-colors cursor-pointer"
                 >
                   <Mail className="w-4 h-4" />
                 </a>
@@ -487,15 +505,15 @@ function Landing() {
             </div>
             <div>
               <h4 className="font-bold uppercase text-[10px] tracking-[0.2em] mb-6">{t.footer.company}</h4>
-              <ul className="space-y-4 text-sm text-black/60">
-                <li><a href="#about" className="hover:text-emerald-600 transition-colors">{t.nav.about}</a></li>
-                <li><a href="#leadership" className="hover:text-emerald-600 transition-colors">{t.nav.leadership}</a></li>
-                <li><a href="#ventures" className="hover:text-emerald-600 transition-colors">{t.nav.ventures}</a></li>
+              <ul className="space-y-4 text-sm text-[var(--ink2)]">
+                <li><a href="#about" className="hover:text-[var(--accent)] transition-colors">{t.nav.about}</a></li>
+                <li><a href="#leadership" className="hover:text-[var(--accent)] transition-colors">{t.nav.leadership}</a></li>
+                <li><a href="#ventures" className="hover:text-[var(--accent)] transition-colors">{t.nav.ventures}</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold uppercase text-[10px] tracking-[0.2em] mb-6">{t.footer.contact}</h4>
-              <ul className="space-y-4 text-sm text-black/60">
+              <ul className="space-y-4 text-sm text-[var(--ink2)]">
                 <li>{t.footer.hq}</li>
                 <li>{t.footer.businessId}</li>
                 <li>{t.footer.repPhone}</li>
@@ -503,18 +521,19 @@ function Landing() {
               </ul>
             </div>
           </div>
-          <div className="pt-8 border-t border-black/5 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-black/30">
+          <div className="pt-8 border-t border-[var(--hairline)] flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--ink3)]">
               {t.footer.rights}
             </p>
-            <div className="flex gap-8 text-[10px] font-bold uppercase tracking-widest text-black/30">
-              <Link to="/privacy" className="hover:text-black cursor-pointer">{t.footer.privacy}</Link>
-              <Link to="/terms" className="hover:text-black cursor-pointer">{t.footer.terms}</Link>
-              <Link to="/data-deletion" className="hover:text-black cursor-pointer">Data Deletion</Link>
+            <div className="flex gap-8 text-[10px] font-bold uppercase tracking-widest text-[var(--ink3)]">
+              <Link to="/privacy" className="hover:text-[var(--ink)] cursor-pointer">{t.footer.privacy}</Link>
+              <Link to="/terms" className="hover:text-[var(--ink)] cursor-pointer">{t.footer.terms}</Link>
+              <Link to="/data-deletion" className="hover:text-[var(--ink)] cursor-pointer">Data Deletion</Link>
             </div>
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 }
