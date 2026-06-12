@@ -35,6 +35,15 @@ async function startServer() {
     next();
   });
 
+  // Canonical host: 301 www.troikadrive.com -> troikadrive.com.
+  app.use((req, res, next) => {
+    const host = String(req.headers.host || "").toLowerCase().split(":")[0];
+    if (host === "www.troikadrive.com") {
+      return res.redirect(301, `https://${CANONICAL_HOST}${req.originalUrl}`);
+    }
+    next();
+  });
+
   // Origin protection: reject direct origin hits that bypass Cloudflare.
   app.use((req, res, next) => {
     if (req.path === "/api/health") return next(); // never block health checks
